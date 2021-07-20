@@ -6,7 +6,7 @@ L.tileLayer(
     attribution:
       'Map data &copy <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery &copy <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 14,
-    minZoom: 1,
+    minZoom: 2,
     id: "mapbox/outdoors-v11",
     tileSize: 512,
     zoomOffset: -1,
@@ -23,9 +23,3 @@ map.on("mousedown", (p) => {
 map.on("mouseup", () => {
   clearTimeout(hold);
 });
-
-function getWeatherData(lat, lng) {
-  fetch(`/${lat}/${lng}`)
-    .then((data) => data.json())
-    .then((data) => console.log(data));
-}
