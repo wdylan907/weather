@@ -14,28 +14,18 @@ L.tileLayer(
   }
 ).addTo(map);
 
-// var popup = L.popup();
-// function onMapClick(e) {
-//   popup
-//     .setLatLng(e.latlng)
-//     .setContent("You clicked the map at " + e.latlng.toString())
-//     .openOn(map);
-// }
-// map.on("click", onMapClick);
-
-function getCoords(obj) {
-  coordinates = [obj.latlng.lat, obj.latlng.lng];
-  console.log(coordinates);
-}
-
 map.on("mousedown", (p) => {
-  timer = setTimeout(() => {
-    //getCoords(p);
-    coordinates = [p.latlng.lat, p.latlng.lng];
-    console.log(coordinates);
+  hold = setTimeout(() => {
+    getWeatherData(p.latlng.lat, p.latlng.lng);
   }, 1000);
 });
 
 map.on("mouseup", () => {
-  clearTimeout(timer);
+  clearTimeout(hold);
 });
+
+function getWeatherData(lat, lng) {
+  fetch(`/${lat}/${lng}`)
+    .then((data) => data.json())
+    .then((data) => console.log(data));
+}
