@@ -17,8 +17,6 @@ function initMap() {
 function initSearchBox() {
   document.getElementById("form").addEventListener("submit", () => {
     let query = document.getElementById("input").value;
-    let lat;
-    let lng;
     searchByName(query);
   });
 }
