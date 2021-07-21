@@ -1,8 +1,9 @@
 let MAPBOX_KEY;
 let map;
-init();
+initMap();
+initSearchBox();
 
-function init() {
+function initMap() {
   fetch("/mapboxkey")
     .then((res) => res.text())
     .then((res) => {
@@ -14,7 +15,7 @@ function init() {
 
 function createMap() {
   map = L.map("map", { zoomDelta: 2 });
-  map.setView([35.9101, -79.0753], 8);
+  initLoc();
   L.tileLayer(
     "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
     {
@@ -30,15 +31,18 @@ function createMap() {
   ).addTo(map);
 }
 
+function initLoc() {
+  const n = Math.floor(Math.random() * locations.length);
+  getCoords(locations[n]);
+}
+
 function addEventHandlers() {
   let hold;
-
   map.on("mousedown", (p) => {
     hold = setTimeout(() => {
       getData(p.latlng.lat, p.latlng.lng);
     }, 1000);
   });
-
   map.on("mouseup", () => {
     clearTimeout(hold);
   });
@@ -79,7 +83,17 @@ function getCoords(query) {
       lng = res.features[0].center[0];
     })
     .then(() => {
+      map.setZoom(8);
       map.panTo([lat, lng]);
       getData(lat, lng);
     });
+}
+
+function initSearchBox() {
+  document.getElementById("form").addEventListener("submit", () => {
+    let query = document.getElementById("input").value;
+    let lat;
+    let lng;
+    getCoords(query);
+  });
 }
