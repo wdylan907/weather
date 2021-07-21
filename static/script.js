@@ -13,6 +13,15 @@ function initMap() {
     .then(addEventHandlers);
 }
 
+function initSearchBox() {
+  document.getElementById("form").addEventListener("submit", () => {
+    let query = document.getElementById("input").value;
+    let lat;
+    let lng;
+    searchByName(query);
+  });
+}
+
 function createMap() {
   map = L.map("map", { zoomDelta: 2 });
   initLoc();
@@ -33,7 +42,7 @@ function createMap() {
 
 function initLoc() {
   const n = Math.floor(Math.random() * locations.length);
-  getCoords(locations[n]);
+  searchByName(locations[n]);
 }
 
 function addEventHandlers() {
@@ -73,10 +82,10 @@ function getName(lat, lng) {
     });
 }
 
-function getCoords(query) {
+function searchByName(query) {
   let lat;
   let lng;
-  fetch(`/get_coords/${query}`)
+  fetch(`/search_by_name/${query}`)
     .then((res) => res.json())
     .then((res) => {
       lat = res.features[0].center[1];
@@ -87,13 +96,4 @@ function getCoords(query) {
       map.panTo([lat, lng]);
       getData(lat, lng);
     });
-}
-
-function initSearchBox() {
-  document.getElementById("form").addEventListener("submit", () => {
-    let query = document.getElementById("input").value;
-    let lat;
-    let lng;
-    getCoords(query);
-  });
 }

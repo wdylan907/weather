@@ -25,4 +25,5 @@ const locations = [
   "Havana Cuba",
   "St Louis",
   "Boteti",
+  "Jerusalem",
 ];
