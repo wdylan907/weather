@@ -13,7 +13,7 @@ function initMap() {
 }
 
 function createMap() {
-  map = L.map("map");
+  map = L.map("map", { zoomDelta: 2 });
   map.setView([35.9101, -79.0753], 13);
   L.tileLayer(
     "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
