@@ -68,3 +68,18 @@ function getName(lat, lng) {
       document.getElementById("name").innerHTML = placeName;
     });
 }
+
+function getCoords(query) {
+  let lat;
+  let lng;
+  fetch(`/get_coords/${query}`)
+    .then((res) => res.json())
+    .then((res) => {
+      lat = res.features[0].center[1];
+      lng = res.features[0].center[0];
+    })
+    .then(() => {
+      map.panTo([lat, lng]);
+      getData(lat, lng);
+    });
+}
