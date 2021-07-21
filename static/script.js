@@ -100,9 +100,7 @@ function searchByName(query) {
 }
 
 function placeMarker(lat, lng, label) {
-  if (marker !== null) {
-    map.removeLayer(marker);
-  }
+  if (marker !== null) map.removeLayer(marker);
   marker = L.marker([lat, lng]).addTo(map);
   marker.bindPopup(label);
 }
