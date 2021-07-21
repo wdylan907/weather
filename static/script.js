@@ -1,5 +1,6 @@
 let MAPBOX_KEY;
 let map;
+let marker = null;
 initMap();
 initSearchBox();
 
@@ -49,7 +50,7 @@ function addEventHandlers() {
   let hold;
   map.on("mousedown", (p) => {
     hold = setTimeout(() => {
-      getData(p.latlng.lat, p.latlng.lng);
+      searchByCoord(p.latlng.lat, p.latlng.lng);
     }, 1000);
   });
   map.on("mouseup", () => {
@@ -57,20 +58,12 @@ function addEventHandlers() {
   });
 }
 
-function getData(lat, lng) {
+function searchByCoord(lat, lng) {
+  let placeName;
+  getName(lat, lng);
   fetch(`/weather/${lat}/${lng}`)
     .then((res) => res.json())
     .then((res) => displayData(res));
-}
-
-function displayData(data) {
-  getName(data.lat, data.lon);
-  document.getElementById("lat").innerHTML = "Lattitude: " + data.lat;
-  document.getElementById("lon").innerHTML = "Longitude: " + data.lon;
-  document.getElementById("temp").innerHTML =
-    "Temperature: " + data.current.temp;
-  document.getElementById("desc").innerHTML =
-    "Description: " + data.current.weather[0].description;
 }
 
 function getName(lat, lng) {
@@ -78,8 +71,18 @@ function getName(lat, lng) {
     .then((res) => res.json())
     .then((res) => {
       placeName = res.features[0].place_name;
-      document.getElementById("name").innerHTML = placeName;
     });
+}
+
+function displayData(data) {
+  placeMarker(data.lat, data.lon, placeName);
+  document.getElementById("name").innerHTML = placeName;
+  document.getElementById("lat").innerHTML = "Lattitude: " + data.lat;
+  document.getElementById("lon").innerHTML = "Longitude: " + data.lon;
+  document.getElementById("temp").innerHTML =
+    "Temperature: " + data.current.temp;
+  document.getElementById("desc").innerHTML =
+    "Description: " + data.current.weather[0].description;
 }
 
 function searchByName(query) {
@@ -94,6 +97,14 @@ function searchByName(query) {
     .then(() => {
       map.setZoom(8);
       map.panTo([lat, lng]);
-      getData(lat, lng);
+      searchByCoord(lat, lng);
     });
+}
+
+function placeMarker(lat, lng, label) {
+  if (marker !== null) {
+    map.removeLayer(marker);
+  }
+  marker = L.marker([lat, lng]).addTo(map);
+  marker.bindPopup(label);
 }
