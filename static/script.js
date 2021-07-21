@@ -1,8 +1,8 @@
 let MAPBOX_KEY;
 let map;
-initMap();
+init();
 
-function initMap() {
+function init() {
   fetch("/mapboxkey")
     .then((res) => res.text())
     .then((res) => {
@@ -31,6 +31,8 @@ function createMap() {
 }
 
 function addEventHandlers() {
+  let hold;
+
   map.on("mousedown", (p) => {
     hold = setTimeout(() => {
       getData(p.latlng.lat, p.latlng.lng);
@@ -43,18 +45,26 @@ function addEventHandlers() {
 }
 
 function getData(lat, lng) {
-  fetch(`/${lat}/${lng}`)
+  fetch(`/weather/${lat}/${lng}`)
     .then((res) => res.json())
     .then((res) => displayData(res));
 }
 
 function displayData(data) {
-  console.log(data);
-
+  getName(data.lat, data.lon);
   document.getElementById("lat").innerHTML = "Lattitude: " + data.lat;
   document.getElementById("lon").innerHTML = "Longitude: " + data.lon;
   document.getElementById("temp").innerHTML =
     "Temperature: " + data.current.temp;
   document.getElementById("desc").innerHTML =
     "Description: " + data.current.weather[0].description;
+}
+
+function getName(lat, lng) {
+  fetch(`/get_name/${lat}/${lng}`)
+    .then((res) => res.json())
+    .then((res) => {
+      placeName = res.features[0].place_name;
+      document.getElementById("name").innerHTML = placeName;
+    });
 }

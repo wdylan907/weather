@@ -8,6 +8,16 @@
 
 #data {
   float: left;
-  margin-top: 200px;
+  margin-top: 75px;
   margin-left: 100px;
+}
+
+#input {
+  margin-top: 120px;
+  margin-left: 150px;
+}
+
+#button {
+  margin-top: 20px;
+  margin-left: 205px;
 }
