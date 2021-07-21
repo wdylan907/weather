@@ -27,7 +27,7 @@ def get_name(lat, lng):
 @app.route('/get_coords/<query>')
 def get_coords(query):
     URL = ("https://api.mapbox.com/geocoding/v5/mapbox.places/"
-            f"{query}.json?access_token={MAPBOX_KEY}&types=place")
+            f"{query}.json?access_token={MAPBOX_KEY}")
     return requests.get(URL).json()
 
 @app.route('/mapboxkey')
