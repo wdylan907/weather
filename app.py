@@ -1,10 +1,6 @@
 from flask import Flask, render_template
 import requests
-import os
-#from config import OPENWEATHER_KEY, MAPBOX_KEY
-
-OPENWEATHER_KEY = os.environ.get('OPENWEATHER_KEY')
-MAPBOX_KEY = os.environ.get('MAPBOX_KEY')
+from os import environ
 
 app = Flask(__name__)
 
@@ -14,10 +10,15 @@ def index():
 
 @app.route('/<lat>/<lng>')
 def weather_data(lat, lng):
+    OPENWEATHER_KEY = environ.get('OPENWEATHER_KEY')
     URL = ('https://api.openweathermap.org/data/2.5/onecall?'
            'units=imperial&exclude=minutely,hourly'
            f'&lat={lat}&lon={lng}&appid={OPENWEATHER_KEY}')
     return requests.get(URL).json()
+
+@app.route('/mapboxkey')
+def key():
+    return environ.get('MAPBOX_KEY')
 
 if __name__ == "__main__":
     app.run(debug=True,threaded=True)
