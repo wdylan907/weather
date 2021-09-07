@@ -76,9 +76,8 @@ function displayData(data) {
   console.log(data)
   placeMarker(data.lat, data.lon, placeName);
   document.getElementById("name").innerHTML = placeName;
-  document.getElementById("lat").innerHTML = data.lat + ", " + data.lon;
-  document.getElementById("lon").innerHTML = "Longitude: " + data.lon;
-  document.getElementById("temp").innerHTML = data.current.temp + "°F";
+  document.getElementById("loc").innerHTML = data.lat + ", " + data.lon;
+  document.getElementById("temp").innerHTML = data.current.temp + " °F";
   document.getElementById("desc").innerHTML = data.current.weather[0].description;
 }
 
