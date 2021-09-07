@@ -73,6 +73,7 @@ function getName(lat, lng) {
 }
 
 function displayData(data) {
+  console.log(data)
   placeMarker(data.lat, data.lon, placeName);
   document.getElementById("name").innerHTML = placeName;
   document.getElementById("lat").innerHTML = "Lattitude: " + data.lat;
