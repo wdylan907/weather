@@ -2,7 +2,7 @@
   height: 500px;
   width: 800px;
   float: left;
-  margin-top: 30px;
+  margin-top: 20px;
   margin-left: 70px;
 }
 
@@ -23,7 +23,6 @@
 }
 
 #instructions {
-  float: left;
-  margin-top: 50px;
+  margin-top: 40px;
   margin-left:200px
 }
