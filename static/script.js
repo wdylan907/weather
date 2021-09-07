@@ -40,8 +40,9 @@ function createMap() {
 }
 
 function initLoc() {
-  const n = Math.floor(Math.random() * locations.length);
-  searchByName(locations[n]);
+  //const n = Math.floor(Math.random() * locations.length);
+  //searchByName(locations[n]);
+  searchByName("Chapel Hill");
 }
 
 function addEventHandlers() {
