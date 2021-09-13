@@ -2,8 +2,10 @@ from flask import Flask, render_template
 import requests
 from os import environ
 
-OPENWEATHER_KEY = environ.get('OPENWEATHER_KEY')
-MAPBOX_KEY = environ.get('MAPBOX_KEY')
+# MAPBOX_KEY = environ.get('MAPBOX_KEY')
+# WEATHERAPI_KEY = environ.get('WEATHERAPI_KEY')
+MAPBOX_KEY = 'pk.eyJ1Ijoid2R5bGFuOTA3IiwiYSI6ImNrcTN1NTZscDBhOTUyb3FlOGF4MXR5OTMifQ.aQUCaSfWltYEmJ7rScfX8Q'
+WEATHERAPI_KEY = 'c8a9b5f00dcf47778a4165016211309'
 
 app = Flask(__name__)
 
@@ -12,22 +14,15 @@ def index():
     return render_template("index.html")
 
 @app.route('/weather/<lat>/<lng>')
-def weather_data(lat, lng):
-    URL = ('https://api.openweathermap.org/data/2.5/onecall?'
-           'units=imperial&exclude=minutely,hourly'
-           f'&lat={lat}&lon={lng}&appid={OPENWEATHER_KEY}')
-    return requests.get(URL).json()
-
-@app.route('/get_name/<lat>/<lng>')
-def get_name(lat, lng):
-    URL = ("https://api.mapbox.com/geocoding/v5/mapbox.places/"
-            f"{lng},{lat}.json?access_token={MAPBOX_KEY}&types=place,region")
+def search_by_coords(lat, lng):
+    URL = ('http://api.weatherapi.com/v1/current.json?'
+           f'key={WEATHERAPI_KEY}&q={lat},{lng}')
     return requests.get(URL).json()
 
 @app.route('/search_by_name/<query>')
-def get_coords(query):
-    URL = ("https://api.mapbox.com/geocoding/v5/mapbox.places/"
-            f"{query}.json?access_token={MAPBOX_KEY}")
+def search_by_name(query):
+    URL = ('http://api.weatherapi.com/v1/current.json?'
+           f'key={WEATHERAPI_KEY}&q={query}')
     return requests.get(URL).json()
 
 @app.route('/mapboxkey')

@@ -1,6 +1,6 @@
 let MAPBOX_KEY;
 let map;
-let marker = null;
+let marker;
 initMap();
 initSearchBox();
 
@@ -23,12 +23,11 @@ function initSearchBox() {
 
 function createMap() {
   map = L.map("map", { zoomDelta: 2 });
-  initLoc();
+  searchByName("Chapel Hill");
   L.tileLayer(
     "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
     {
-      attribution:
-        'Map data &copy <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery &copy <a href="https://www.mapbox.com/">Mapbox</a>',
+      attribution: 'Map data &copy <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery &copy <a href="https://www.mapbox.com/">Mapbox</a>',
       maxZoom: 14,
       minZoom: 2,
       id: "mapbox/outdoors-v11",
@@ -39,17 +38,11 @@ function createMap() {
   ).addTo(map);
 }
 
-function initLoc() {
-  //const n = Math.floor(Math.random() * locations.length);
-  //searchByName(locations[n]);
-  searchByName("Chapel Hill");
-}
-
 function addEventHandlers() {
   let hold;
-  map.on("mousedown", (p) => {
+  map.on("mousedown", (point) => {
     hold = setTimeout(() => {
-      searchByCoord(p.latlng.lat, p.latlng.lng);
+      searchByCoord(point.latlng.lat, point.latlng.lng);
     }, 1000);
   });
   map.on("mouseup", () => {
@@ -57,49 +50,35 @@ function addEventHandlers() {
   });
 }
 
+function searchByName(query) {
+  fetch(`/search_by_name/${query}`)
+    .then((res) => res.json())
+    .then((res) => {
+      map.setZoom(8);
+      searchByCoord(res.location.lat, res.location.lon);
+    });
+}
+
 function searchByCoord(lat, lng) {
-  let placeName;
-  getName(lat, lng);
+  map.panTo([lat, lng]);
   fetch(`/weather/${lat}/${lng}`)
     .then((res) => res.json())
     .then((res) => displayData(res));
 }
 
-function getName(lat, lng) {
-  fetch(`/get_name/${lat}/${lng}`)
-    .then((res) => res.json())
-    .then((res) => {
-      placeName = res.features[0].place_name;
-    });
-}
-
 function displayData(data) {
   console.log(data)
-  placeMarker(data.lat, data.lon, placeName);
-  document.getElementById("name").innerHTML = placeName;
-  document.getElementById("loc").innerHTML = data.lat + ", " + data.lon;
-  document.getElementById("temp").innerHTML = data.current.temp + " °F";
-  document.getElementById("desc").innerHTML = data.current.weather[0].description;
-}
-
-function searchByName(query) {
-  let lat;
-  let lng;
-  fetch(`/search_by_name/${query}`)
-    .then((res) => res.json())
-    .then((res) => {
-      lat = res.features[0].center[1];
-      lng = res.features[0].center[0];
-    })
-    .then(() => {
-      map.setZoom(8);
-      map.panTo([lat, lng]);
-      searchByCoord(lat, lng);
-    });
+  let locationName = `${data.location.name}, ${data.location.region}`
+  placeMarker(data.location.lat, data.location.lon, locationName)
+  document.getElementById("name").innerHTML = locationName
+  document.getElementById("icon").src = data.current.condition.icon
+  document.getElementById("temperature").innerHTML = `${data.current.temp_f} °F`
+  document.getElementById("description").innerHTML = data.current.condition.text
+  document.getElementById("humidity").innerHTML = `${data.current.humidity}% humidity` 
 }
 
 function placeMarker(lat, lng, label) {
-  if (marker !== null) map.removeLayer(marker);
+  if (marker) map.removeLayer(marker);
   marker = L.marker([lat, lng]).addTo(map);
   marker.bindPopup(label);
 }
